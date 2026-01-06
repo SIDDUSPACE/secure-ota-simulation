@@ -1,0 +1,11 @@
+# Compiled binaries
+ota_sim
+security_test
+
+# Object files
+*.o
+
+# Editor / OS junk
+.vscode/
+.DS_Store
+Thumbs.db
