@@ -2,10 +2,6 @@
 
 > A **production-grade Secure OTA (Over-The-Air) firmware update system** simulated in C, designed to demonstrate how **real embedded devices update safely without bricking**, even under failures or attacks.
 
-This is **NOT a toy OTA project**.  
-It models how professional bootloaders in real devices work.
-
----
 
 ## 🚀 Why this project exists
 
@@ -27,34 +23,21 @@ This project **explicitly defends against**:
 
 ## 🧠 System Architecture – Secure OTA Flow
 
+```md
+## 🧱 System Architecture – Block Diagram
+
 ```mermaid
-flowchart TD
-    A[Power On / Reset] --> B[Bootloader Start]
+graph LR
+    P[Power On] --> B[Bootloader]
+    B --> M[Metadata Manager]
+    M -->|Active Slot| A[Active Firmware]
+    M -->|Pending Slot| P2[Pending Firmware]
+    P2 -->|Test Mode| W[Watchdog]
+    W -->|Healthy| C[Commit Update]
+    W -->|Timeout| R[Rollback]
+    R --> A
 
-    B --> C{Metadata Valid?}
-    C -- No --> F[Boot Factory Firmware]
-    C -- Yes --> D{OTA State?}
 
-    D -- IDLE --> E[Verify Active Slot]
-    E -- Invalid --> F
-    E -- Valid --> G[Boot Active Firmware]
-
-    D -- COMMIT_PENDING --> H[Verify Pending Slot]
-    D -- BOOT_TEST --> H
-
-    H -- Invalid --> I[Rollback to Active Slot]
-    I --> F
-
-    H -- Valid --> J[Boot Pending Firmware<br/>(Test Mode)]
-
-    J --> K{Firmware Healthy?}
-    K -- Yes --> L[Commit Firmware<br/>Update Metadata]
-    L --> M[Boot Success]
-
-    K -- No --> N[Watchdog Timeout]
-    N --> I
-
-    F --> M
 
 ```
 📸 OTA Simulation Output (Validated Results)
@@ -62,7 +45,7 @@ flowchart TD
 The following outputs were captured from the actual execution of this Secure OTA simulation, demonstrating correct behavior under failure conditions.
 ![Bad OTA Rollback](screenshots/bad_ota_rollback.png)
 
-![Watchdog Reset](screenshots/watchdog_reset.png)
+![Watchdog Reset](screenshots/build_success.png)
 
 
 
@@ -72,4 +55,5 @@ Project Developed By:
 Siddarth S
 
 Domain: Embedded Systems · Firmware · Secure OTA
+
 Focus: Reliability, safety, and production-grade design
